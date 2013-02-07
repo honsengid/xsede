@@ -1,4 +1,6 @@
-#!/bin/bash
+#
+# Functions for The Life Tectonic
+#
 
 function detect_system()
 {
@@ -8,10 +10,3 @@ function detect_system()
 		XSEDE_SYSTEM='kraken'
 	fi
 }
-
-detect_system
-if [ -n "$XSEDE_SYSTEM" ]; then
-	echo $XSEDE_SYSTEM
-else
-	echo "Unknown XSDED system `hostname`"
-fi
