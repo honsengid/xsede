@@ -1,0 +1,24 @@
+# ${HOME}/.modules
+#
+# This file is sourced by the modules initialization script when a login
+# shell is started.
+#
+# To have your preferred modules loaded upon login shell execution, add
+# the required module commands to this file.
+#
+# Note that the system you run this on may already load some local default
+# modules for you; these are visible using the "module list" command.
+
+# To load the Common User Environment (CUE) modules, uncomment (i.e. remove
+# the leading '# ') for the following 'module load' commands:
+#
+# module load cue-login-env	# CUE login environment variables
+# module load cue-build		# CUE build environment, loads cue-compiler
+# module load cue-math		# CUE math libraries
+# module load cue-comm		# CUE MPI libraries
+# module load cue-tg		# CUE legacy TeraGrid environment variables
+#module load intel
+module switch PrgEnv-pgi PrgEnv-gnu
+module load hdf5
+module load python/2.7.1
+

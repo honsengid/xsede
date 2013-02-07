@@ -1,0 +1,49 @@
+#!/bin/bash
+report_base=$SCRATCH/reports/
+suite_dir=`pwd`
+suite_name=`basename $suite_dir`
+models=`find . -mindepth 1 -maxdepth 1 -type d | sort`
+
+# make the report directory
+report_dir=$report_base/$suite_name
+echo "Creating report directory $report_dir"
+mkdir -p $report_dir
+
+###-----------------------------------------------------------------
+###              Welcome to the Stampede Supercomputer              
+###-----------------------------------------------------------------
+###
+###--> Verifying valid submit host (login2)...OK
+###--> Enforcing max jobs per user...OK
+###--> Verifying availability of your home dir (/home1/01341/lopaka)...OK
+###--> Verifying availability of your work dir (/work/01341/lopaka)...OK
+###--> Verifying availability of your scratch dir (/scratch/01341/lopaka)...OK
+###--> Verifying access to desired queue (serial)...OK
+###--> Verifying job request is within current queue limits...OK
+###--> Checking available allocation (TG-EAR100021)...OK
+###Submitted batch job 164616
+
+for m in $models; do
+	model_dir=`basename $m`
+	echo "Submitting jobs for model $model_dir"
+	# get the list of SLURM jobs
+	cd $model_dir
+	jobs=`ls job*.sbat  | sort`
+	jobid=''
+	for job in $jobs; do
+		echo job=$job
+		if [ -z "$jobid" ]; then
+			echo ">>> sbatch $job"
+			jobline=`sbatch | grep "^Submitted batch job "`
+			jobid=${JOB_LINE:19}
+			echo "Job $job has id $jobid"
+		 else
+			oldjob=$jobid
+			echo ">>> sbatch -d afterany:$jobid $job"
+			jobid=`sbatch -d afterany:$jobid $job`
+			echo "Job $job has id $jobid dependant on $oldjob"
+		fi
+		
+	done
+	cd ..
+done
