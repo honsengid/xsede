@@ -49,7 +49,7 @@ sure
 . $HM/lib/sh/tlt-functions
 
 detect_system
-if [ ! -n "$XSEDE_SYSTEM" ]; then
+if [ -z "$XSEDE_SYSTEM" ]; then
 	echo "Unknown XSDED system `hostname`"
 	abort
 fi
@@ -67,3 +67,13 @@ do
 	echo ":: ln -s $(basename ${file}) ${file%.${XSEDE_SYSTEM}}"
 	ln -s $(basename ${file}) ${file%.${XSEDE_SYSTEM}}
 done
+
+
+if [ -n "$SCRATCHDIR"]; then
+	echo ":: ln -s ${SCRATCHDIR} ${HOME}/scratch"
+	ln -s ${SCRATCHDIR} ${HOME}/scratch
+fi
+if [ -n "${SCRATCH}"]; then
+	echo ":: ln -s ${SCRATCH} ${HOME}/scratch"
+	ln -s ${SCRATCH} ${HOME}/scratch
+fi
