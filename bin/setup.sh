@@ -69,11 +69,12 @@ do
 done
 
 
-if [ -n "$SCRATCHDIR"]; then
+if [ -n "$SCRATCHDIR" ]; then
 	echo ":: ln -s ${SCRATCHDIR} ${HOME}/scratch"
 	ln -s ${SCRATCHDIR} ${HOME}/scratch
 fi
-if [ -n "${SCRATCH}"]; then
+
+if [ -n "${SCRATCH}" ]; then
 	echo ":: ln -s ${SCRATCH} ${HOME}/scratch"
 	ln -s ${SCRATCH} ${HOME}/scratch
 fi
