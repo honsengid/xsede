@@ -34,13 +34,14 @@ for m in $models; do
 		echo job=$job
 		if [ -z "$jobid" ]; then
 			echo ">>> sbatch $job"
-			jobline=`sbatch | grep "^Submitted batch job "`
-			jobid=${JOB_LINE:19}
+			jobline=`sbatch $job | grep "^Submitted batch job "`	
+			jobid=${jobline:20}
 			echo "Job $job has id $jobid"
 		 else
 			oldjob=$jobid
-			echo ">>> sbatch -d afterany:$jobid $job"
-			jobid=`sbatch -d afterany:$jobid $job`
+			echo ">>> sbatch -d afterany:$oldjob $job"
+			jobline=`sbatch -d afterany:$oldjob $job | grep "^Submitted batch job "`
+			jobid=${jobline:20}
 			echo "Job $job has id $jobid dependant on $oldjob"
 		fi
 		
