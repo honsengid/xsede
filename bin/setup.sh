@@ -17,6 +17,7 @@ function sure()
 
 DIR=$(readlink -f  "$(dirname "${BASH_SOURCE[0]}" )")
 HM=$(readlink -f "$DIR/../home/")
+DEST=${HOME}
 
 
 echo "\
@@ -38,8 +39,8 @@ If you have any doubts the look in:
 ${HM}
 
 The contents of this directory will be copied to your 
-\$HOME directory:
-$HOME
+home directory:
+${DEST}
 
 "
 
@@ -48,7 +49,7 @@ sure
 . $HM/lib/sh/tlt-functions
 
 detect_system
-if [ ! -n "$XSEDE_SYSTEM" ]; then
+if [ -z "$XSEDE_SYSTEM" ]; then
 	echo "Unknown XSDED system `hostname`"
 	abort
 fi
@@ -58,4 +59,22 @@ if this is incorrect please abort.
 "
 sure
 
+echo ":: cp -av $HM/. $DEST"
+cp -av $HM/. $DEST
 
+find $DEST -name "*.${XSEDE_SYSTEM}" -print0 | while read -d $'\0' file
+do
+	echo ":: ln -s $(basename ${file}) ${file%.${XSEDE_SYSTEM}}"
+	ln -s $(basename ${file}) ${file%.${XSEDE_SYSTEM}}
+done
+
+
+if [ -n "$SCRATCHDIR" ]; then
+	echo ":: ln -s ${SCRATCHDIR} ${HOME}/scratch"
+	ln -s ${SCRATCHDIR} ${HOME}/scratch
+fi
+
+if [ -n "${SCRATCH}" ]; then
+	echo ":: ln -s ${SCRATCH} ${HOME}/scratch"
+	ln -s ${SCRATCH} ${HOME}/scratch
+fi
