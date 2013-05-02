@@ -1,0 +1,10 @@
+#!/bin/bash
+cmd="#!/bin/bash"
+while [ -n "$1" ]; do
+   MODELS="$MODELS '$1'"
+   shift
+done
+echo "ibrun $HOME/bin/mpitar.py -j ${MODELS}" >> mpitar.sbat
+cmd=$(echo -e "${cmd}" "\n ibrun $HOME/bin/mpitar.py -j ${MODELS})
+echo "${cmd}"
+#echo "${cmd}" | sbatch -A ${XSEDE_ACCOUNT} -J mpitar -n 16 -t 6:00 -p serial

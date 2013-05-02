@@ -68,6 +68,9 @@ do
 	ln -s $(basename ${file}) ${file%.${XSEDE_SYSTEM}}
 done
 
+#
+# Setup the scratch directory
+#
 
 if [ -n "$SCRATCHDIR" ]; then
 	echo ":: ln -s ${SCRATCHDIR} ${HOME}/scratch"
@@ -77,4 +80,31 @@ fi
 if [ -n "${SCRATCH}" ]; then
 	echo ":: ln -s ${SCRATCH} ${HOME}/scratch"
 	ln -s ${SCRATCH} ${HOME}/scratch
+fi
+
+#
+# Setup the XSEDE_ACCOUNT
+#
+echo -n "Enter your XSEDE allocation account number: "
+read xsede_account
+echo "XSEDE_ACCOUNT=${xsede_account}" > ${HOME}/.xsede_account
+echo "export XSEDE_ACCOUNT" >> ${HOME}/.xsede_account
+
+echo -n "Enter your notification email address (press enter for no notifications): "
+read xsede_email
+echo "XSEDE_EMAIL=${xsede_email}" >> ${HOME}/.xsede_account
+echo "export XSEDE_EMAIL" >> ${HOME}/.xsede_account
+
+if [ -n "$xsede_email" ]; then
+	if [ "$XSEDE_SYSTEM" = "stampede" ]; then
+		echo -n "Enter your notification preferences, one of BEGIN, END, FAIL, ALL: "
+		read xsede_notification
+		echo "XSEDE_NOTIFICATION='--mail-user=${xsede_email} --mail-type=${xsede_notification}'" >> ${HOME}/.xsede_account
+		echo "export XSEDE_NOTIFICATION" >> ${HOME}/.xsede_account
+	elif [ "$XSEDE_SYSTEM" = "kraken" ]; then
+		echo -n "Enter your notification preferences, a combination of (a)bort, (b)egin, (e)nd: "
+		read xsede_notification
+		echo "XSEDE_NOTIFICATION=-M ${xsede_email} -m ${xsede_notification}" >> ${HOME}/.xsede_account
+		echo "export XSEDE_NOTIFICATION" >> ${HOME}/.xsede_account
+	fi
 fi
