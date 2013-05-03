@@ -18,7 +18,10 @@
 # module load cue-comm		# CUE MPI libraries
 # module load cue-tg		# CUE legacy TeraGrid environment variables
 #module load intel
+
+# Module for Kraken
 module switch PrgEnv-pgi PrgEnv-gnu
 module load hdf5
 module load python/2.7.1
+module load git
 

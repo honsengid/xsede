@@ -12,7 +12,7 @@ fi
 . $HOME/lib/sh/tlt-functions
 detect_system
 # XSEDE Account Settings
-. $HOME/.xsede_accout
+. $HOME/.xsede_account
 export XSEDE_SYSTEM
 export PS1="\[\033[01;32m\]\u@\[\033[01;31m\]${XSEDE_SYSTEM}\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ "
 export LS_OPTIONS="$LS_OPTIONS --color"
