@@ -1,0 +1,10 @@
+#!/bin/bash
+cmd="#!/bin/bash"
+cmd="${cmd}\ncd \$PBS_O_WORKDIR\n"
+for var in "$@"
+do
+	cmd=`echo -e "${cmd}" "\naprun -n 12 $HOME/bin/mpibzip2 -k ${var}\necho done with ${var}\n"`
+done
+echo qsub -A ${XSEDE_ACCOUNT} ${XSEDE_NOTIFICATION} -N mpibzip -l size=12 -l walltime=06:00:00 
+echo -e "${cmd}"
+echo -e "${cmd}" | qsub -A ${XSEDE_ACCOUNT} ${XSEDE_NOTIFICATION} -N mpibzip -l size=12 -l walltime=06:00:00 
