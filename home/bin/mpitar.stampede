@@ -4,7 +4,6 @@ while [ -n "$1" ]; do
    MODELS="$MODELS '$1'"
    shift
 done
-echo "ibrun $HOME/bin/mpitar.py -j ${MODELS}" >> mpitar.sbat
-cmd=$(echo -e "${cmd}" "\n ibrun $HOME/bin/mpitar.py -j ${MODELS})
-echo "${cmd}"
-#echo "${cmd}" | sbatch -A ${XSEDE_ACCOUNT} -J mpitar -n 16 -t 6:00 -p serial
+echo sbatch -A ${XSEDE_ACCOUNT} -J mpitar -n 16 -t 6:00 -p serial
+echo -e "#!/bin/bash\ncd \$PBS_O_WORKDIR\nibrun $HOME/bin/mpitar.py -j ${MODELS}"
+echo -e "#!/bin/bash\ncd \$PBS_O_WORKDIR\nibrun $HOME/bin/mpitar.py -j ${MODELS}" | sbatch -A ${XSEDE_ACCOUNT} -J mpitar -n 16 -t 6:00 -p serial
