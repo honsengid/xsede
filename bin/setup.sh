@@ -9,7 +9,7 @@ function abort()
 function sure()
 {
 	read -r -p "Are you sure you want to continue? [y/N] " response
-	response=${response,,}    # tolower
+	response=$(echo $response | tr '[A-Z]' '[a-z]')
 	if [[ ! $response =~ ^(yes|y)$ ]]; then
 		abort
 	fi
@@ -62,15 +62,20 @@ sure
 echo ":: cp -av $HM/. $DEST"
 cp -av $HM/. $DEST
 
-find $DEST -name "*.${XSEDE_SYSTEM}" -print0 | while read -d $'\0' file
+len=$((1+${#HM}))
+find ${HM} -name "*.${XSEDE_SYSTEM}" -print0 | while read -d $'\0' file
 do
-	echo ":: ln -s $(basename ${file}) ${file%.${XSEDE_SYSTEM}}"
-	ln -s $(basename ${file}) ${file%.${XSEDE_SYSTEM}}
+	file=$(echo ${file} | cut -c ${len}-)
+	echo ${file}
+	echo ":: ln -s $(basename ${file}) ${DEST}${file%.${XSEDE_SYSTEM}}"
+	ln -s $(basename ${file}) ${DEST}${file%.${XSEDE_SYSTEM}}
 done
 
 #
 # Setup the scratch directory
 #
+
+rm ${HOME}/scratch
 
 if [ -n "$SCRATCHDIR" ]; then
 	echo ":: ln -s ${SCRATCHDIR} ${HOME}/scratch"
@@ -104,7 +109,7 @@ if [ -n "$xsede_email" ]; then
 	elif [ "$XSEDE_SYSTEM" = "kraken" ]; then
 		echo -n "Enter your notification preferences, a combination of (a)bort, (b)egin, (e)nd: "
 		read xsede_notification
-		echo "XSEDE_NOTIFICATION=-M ${xsede_email} -m ${xsede_notification}" >> ${HOME}/.xsede_account
+		echo "XSEDE_NOTIFICATION='-M ${xsede_email} -m ${xsede_notification}'" >> ${HOME}/.xsede_account
 		echo "export XSEDE_NOTIFICATION" >> ${HOME}/.xsede_account
 	fi
 fi

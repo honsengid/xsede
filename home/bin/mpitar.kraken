@@ -1,0 +1,8 @@
+#!/bin/bash
+while [ -n "$1" ]; do
+   MODELS="$MODELS '$1'"
+   shift
+done
+echo qsub -A ${XSEDE_ACCOUNT} ${XSEDE_NOTIFICATION} -N mpitar -l size=12 -l walltime=06:00:00 
+echo -e "#!/bin/bash\ncd \$PBS_O_WORKDIR\naprun -n 12 $HOME/bin/mpitar.py -j ${MODELS}"
+echo -e "#!/bin/bash\ncd \$PBS_O_WORKDIR\naprun -n 12 $HOME/bin/mpitar.py -j ${MODELS}" | qsub -A ${XSEDE_ACCOUNT} ${XSEDE_NOTIFICATION} -N mpitar -l size=12 -l walltime=06:00:00 
